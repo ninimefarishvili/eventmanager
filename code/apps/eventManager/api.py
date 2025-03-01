@@ -2,6 +2,10 @@ from ninja import Router
 
 from .models import Customer, Stadium, Event, Ticket, OrganizerCompany
 from .schema import StadiumSchema, EventSchema
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from .models import Stadium
+
 
 router = Router()
 
@@ -49,6 +53,14 @@ def get_stadiums(request, capacity: int = None):
         stadiums = stadiums.filter(capacity__gt=capacity)
     
     return [StadiumSchema.from_orm(stadium) for stadium in stadiums]
+
+
+
+
+class StadiumList(APIView):
+    def get(self, request, format=None):
+        stadiums = Stadium.objects.all
+        return Response(stadiums)
 
 @router.get("/events")
 def get_events(request, date_from = None, stadium_name = None):
